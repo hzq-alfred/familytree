@@ -4,58 +4,54 @@ var myDiagram, myPalette
 export default function init() {
 
   var GO = go.GraphObject.make;
+  var brush = "#999";
+  var fill_blank = "white";
+  var fill_full = '#999'
+  var color = '#111';
 
   myDiagram =
     GO(go.Diagram, "myDiagramDiv", {
       "undoManager.isEnabled": true
     });
 
-  var fill1 = "rgb(105,210,231)"
-  var brush1 = "rgb(65,180,181)";
-
-  var fill2 = "rgb(167,219,216)"
-  var brush2 = "rgb(127,179,176)";
-
-  var fill3 = "rgb(224,228,204)"
-  var brush3 = "rgb(184,188,164)";
-
-  var fill4 = "rgb(243,134,48)"
-  var brush4 = "rgb(203,84,08)";
-
   function makePort(name, side) {
     return GO(go.Shape, "Rectangle", {
-      fill: 'red', // not seen, by default; set to a translucent gray by showSmallPorts, defined below
-      stroke: null,
+      fill: 'transparent', // not seen, by default; set to a translucent gray by showSmallPorts, defined below
+      stroke: 'transparent',
       desiredSize: new go.Size(8, 8),
       alignment: side, // align the port on the main Shape
       alignmentFocus: side, // just inside the Shape
-      portId: name, // declare this object to be a "port"
-      fromSpot: side,
-      toSpot: side, // declare where links may connect at this port
+      portId: name,
       fromLinkable: true,
-      toLinkable: true, // declare whether the user may draw links to/from here
-      cursor: "pointer", // show a different cursor to indicate potential link point
+      toLinkable: true,
+      fromLinkableDuplicates: true,
+      toLinkableDuplicates: true,
+      cursor: "pointer",
       margin: new go.Margin(-1, 0),
       mouseLeave: function (e, node) {
-        node.fill = 'red'
+        node.fill = 'transparent'
       },
       mouseEnter: function (e, node) {
-        node.fill = 'red'
+        node.fill = 'rgb(0,128,128)'
       },
     });
   }
 
   myDiagram.nodeTemplateMap.add("",
-    GO(go.Node, "Auto", {
-        locationSpot: go.Spot.Center
+    GO(go.Node, "Table", {
+        locationSpot: go.Spot.Center,
+        resizable: true
       },
       new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify),
       GO(go.Shape, "Ellipse", {
           strokeWidth: 2,
-          fill: fill1,
+          width: 60,
+          height: 60,
+          fill: 'transparent',
           name: "SHAPE",
         },
         new go.Binding("figure", "figure"),
+        new go.Binding("geometry", "geometry"),
         new go.Binding("fill", "fill"),
         new go.Binding("stroke", "stroke"),
       ),
@@ -66,15 +62,45 @@ export default function init() {
           textAlign: "center",
           editable: true,
           font: "bold 9pt Helvetica, Arial, sans-serif",
-          name: "TEXT"
+          name: "TEXT",
+          stroke: 'blue'
         },
+        new go.Binding("stroke", "color"),
         new go.Binding("text", "text").makeTwoWay()
       ),
+      makePort("r", go.Spot.Right),
+      makePort("tr", new go.Spot(1, 0.3)),
       makePort("t", go.Spot.Top),
-      makePort("b", go.Spot.Bottom)
+      makePort("l", go.Spot.Left),
+      makePort("tl", new go.Spot(0, 0.3)),
+      makePort("b", go.Spot.Bottom), {
+        toolTip: GO("ToolTip",
+          GO(go.TextBlock, {
+              margin: 4
+            },
+            new go.Binding("text", "tips"))
+        )
+      }
     )
   );
 
+  myDiagram.nodeTemplateMap.add("LinkLabel",
+    GO("Node", {
+        selectable: false,
+        avoidable: false,
+        layerName: "Foreground"
+      },
+      GO("Shape", "Ellipse", {
+        width: 1,
+        height: 1,
+        stroke: 'transparent',
+        fill: 'transparent',
+        portId: "",
+        fromLinkable: true,
+        toLinkable: true,
+        cursor: "pointer",
+      })
+    ));
   myDiagram.addDiagramListener("ChangedSelection", function (diagramEvent) {
     var idrag = document.getElementById("infoDraggable");
     idrag.style.width = "";
@@ -83,47 +109,67 @@ export default function init() {
 
   myPalette = new go.Palette("myPaletteDiv");
   myPalette.nodeTemplateMap = myDiagram.nodeTemplateMap;
-  myDiagram.linkTemplate = GO(go.Link, {
-      curve: go.Link.JumpGap ,
+  myDiagram.linkTemplate = GO("Link", {
       relinkableFrom: true,
-      relinkableTo: true
-      // corner :0,
-      // adjusting:go.Link.End
-      // points: [1, 2, 3, 4, 5, 6],
-      // resegmentable :true
+      relinkableTo: true,
+      toShortLength: 2
     },
-    new go.Binding("points").makeTwoWay(),
-    GO(go.Shape, {
-      stroke: 'black',
-      strokeWidth: 1
+    GO("Shape", {
+      stroke: "#000",
+      strokeWidth: 2
     }),
   )
+
+  myDiagram.linkTemplateMap.add("linkToLink",
+    GO("Link", {
+        relinkableFrom: true,
+        relinkableTo: true
+      },
+      GO("Shape", {
+        stroke: "#000",
+        strokeWidth: 2
+      })
+    ));
+
+  myDiagram.model = GO(go.GraphLinksModel, {
+    linkLabelKeysProperty: "labelKeys"
+  });
+  var male_propositus = go.Geometry.parse("M10,0 L10,10 L25,10 L25,0 L10,0 M3,15 L9,12 L9,17 L3,15  M6,16 L3,20", true);
+  var female_propositus = go.Geometry.parse("M10,0 L10,10 L25,10 L25,0 L10,0 M3,15 L9,12 L9,17 L3,15  M6,16 L3,20", true);
   myPalette.model = new go.GraphLinksModel([{
-      text: "Lake",
-      fill: fill1,
-      stroke: brush1,
-      figure: "Hexagon"
+      text: "",
+      stroke: brush,
+      fill: fill_blank,
+      color: color,
+      figure: "Hexagon",
+      tips:'正常女性'
     },
     {
-      text: "Ocean",
-      fill: fill2,
-      stroke: brush2,
-      figure: "Rectangle"
+      text: "",
+      stroke: brush,
+      fill: fill_blank,
+      color: color,
+      figure: "Rectangle",
+      tips:'正常男性'
     },
     {
-      text: "Sand",
-      fill: fill3,
-      stroke: brush3,
-      figure: "Diamond"
+      text: "",
+      stroke: brush,
+      fill: fill_full,
+      color: color,
+      geometry:female_propositus,
+      tips:'女性先证者'
     },
     {
-      text: "Goldfish",
-      fill: fill4,
-      stroke: brush4,
-      figure: "Octagon"
+      text: "",
+      stroke: brush,
+      fill: fill_full,
+      color: color,
+      figure: 'Gate',
+      geometry:male_propositus,
+      tips:'男性先证者'
     }
   ]);
-
 
   $(function () {
     $("#paletteDraggable").draggable({
@@ -152,15 +198,43 @@ export default function init() {
           show: Inspector.showIfPresent,
           type: 'color'
         },
+        "color": {
+          show: Inspector.showIfPresent,
+          type: 'color'
+        },
         "figure": {
           show: false,
-        }
+        },
+        "tips": {
+          show: false,
+        },
+        "geometry": {
+          show: false,
+        },
+        "from": {
+          show: false,
+        },
+        "to": {
+          show: false,
+        },
+        "labelKeys": {
+          show: false,
+        },
+        "toPort": {
+          show: false,
+        },
+        "fromPort": {
+          show: false,
+        },
+        
       }
     });
   });
- $('#btn').on('click', function () {
-    document.getElementById("mySavedModel").value = myDiagram.model.toJson();
-    myDiagram.isModified = false;
-  })
 
+  myDiagram.toolManager.linkingTool.archetypeLabelNodeData = {
+    category: "LinkLabel"
+  };
+
+  myDiagram.model.linkFromPortIdProperty = 'fromPort';
+  myDiagram.model.linkToPortIdProperty = 'toPort';
 }

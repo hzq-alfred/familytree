@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./res/go.js"></script>
+</head>
+
+<body>
+    <div id="port" style="width: 1000px; height: 500px"></div>
+</body>
+<script>
+    var $ = go.GraphObject.make
+    const portDiagram = $(go.Diagram, 'port', {
+        'initialContentAlignment': go.Spot.Center,
+        'undoManager.isEnabled': true
+    })
+
+    // 指定被创建的连接线的模板
+    portDiagram.linkTemplate = $(go.Link,
+        $(go.Shape, {
+            stroke: 'black',
+            strokeWidth: 3
+        })
+    )
+
+    // 指定被创建的节点的模板
+    portDiagram.nodeTemplate = $(go.Node,
+        new go.Binding('position'),
+
+        $(go.Shape, {
+                fill: 'blue',
+                fromLinkable: true,
+                toLinkable: true
+            },
+            new go.Binding('portId', 'key')
+        )
+    )
+
+    portDiagram.model = new go.GraphLinksModel(
+        [{
+                key: '1',
+                position: new go.Point(500, 0)
+            },
+            {
+                key: '2',
+                position: new go.Point(0, 0)
+            }
+        ]
+    )
+    const makePort = (portId, spot) => (
+        $(go.Shape, {
+            cursor: 'pointer',
+            fill: 'red',
+            width: 10,
+            height: 10,
+            alignment: spot,
+            portId,
+            fromLinkable: true,
+            toLinkable: true,
+            fromLinkableDuplicates:true,
+            toLinkableDuplicates: true,
+            fromSpot:go.Spot.Left,
+            toSpot:go.Spot.Right,
+        })
+    )
+
+    portDiagram.nodeTemplate =
+        $(go.Node, 'Spot',
+            new go.Binding('position'),
+
+            $(go.Panel,'Auto',
+                $(go.Shape,'Rectangle',{fill:'blue'}),
+            ),
+
+            makePort('T', go.Spot.Top),
+            makePort('B', go.Spot.Bottom),
+            makePort('L', go.Spot.Left),
+            makePort('R', go.Spot.Right),
+        )
+        portDiagram.model.linkFromPortIdProperty='fromPort'
+        portDiagram.model.linkToPortIdProperty='toPort'
+</script>
+
+</html>

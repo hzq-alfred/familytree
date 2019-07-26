@@ -15,25 +15,23 @@
 <body>
     <div style="width: 100%; display: flex; ">
         <div id="paletteDraggable" class="draggable" style="height: 300px;width: 200px;">
-            <div id="paletteDraggableHandle" style="text-align: center;font-size: 18px;font-weight: bold">Palette</div>
+            <div id="paletteDraggableHandle" style="text-align: center;font-size: 18px;font-weight: bold">家系图</div>
             <div id="paletteContainer" style="height: 300px;width: 200px;">
                 <div id="myPaletteDiv" style="height: 300px;width: 200px;"></div>
             </div>
         </div>
 
-        <div style="display: inline-block; vertical-align: top; width:400px">
-            <div id="myDiagramDiv" style="background-color: white; border: solid 1px black; height: 400px"></div>
+        <div style="display: inline-block; vertical-align: top; border: solid 2px #ddd; width:1000px; height: 600px;overflow: auto">
+            <div id="myDiagramDiv" style="background-color: white;width: 200%;height: 200%;"></div>
         </div>
 
-        <div id="infoDraggable" class="draggable" style="display: inline-block; vertical-align: top; padding: 5px; top: 20px; left: 380px;">
-            <div id="infoDraggableHandle" style="text-align: center;font-size: 18px;font-weight: bold">Info</div>
+        <div id="infoDraggable" class="draggable" style="display: inline-block; vertical-align: top; padding: 5px;width: 250px">
+            <div id="infoDraggableHandle" style="text-align: center;font-size: 18px;font-weight: bold">属性面板</div>
             <div>
                 <div id="myInfo"></div>
             </div>
         </div>
     </div>
-    <button id="btn">1</button>
-    <textarea id="mySavedModel"></textarea>
 </body>
 <script src="/js.00a46daa.js"></script>
 
