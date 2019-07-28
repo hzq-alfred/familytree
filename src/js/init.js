@@ -91,14 +91,22 @@ export default function init() {
         layerName: "Foreground"
       },
       GO("Shape", "Ellipse", {
-        width: 1,
-        height: 1,
+        width: 4,
+        height: 4,
         stroke: 'transparent',
         fill: 'transparent',
         portId: "",
         fromLinkable: true,
         toLinkable: true,
         cursor: "pointer",
+        mouseLeave: function (e, node) {
+          node.fill = 'transparent';
+          node.stroke = 'transparent';
+        },
+        mouseEnter: function (e, node) {
+          node.fill = 'rgb(0,128,128)';
+          node.stroke = 'rgb(0,128,128)';
+        },
       })
     ));
   myDiagram.addDiagramListener("ChangedSelection", function (diagramEvent) {
@@ -134,15 +142,17 @@ export default function init() {
   myDiagram.model = GO(go.GraphLinksModel, {
     linkLabelKeysProperty: "labelKeys"
   });
-  var male_propositus = go.Geometry.parse("M10,0 L10,10 L25,10 L25,0 L10,0 M3,15 L9,12 L9,17 L3,15  M6,16 L3,20", true);
-  var female_propositus = go.Geometry.parse("M10,0 L10,10 L25,10 L25,0 L10,0 M3,15 L9,12 L9,17 L3,15  M6,16 L3,20", true);
+  var male_propositus = go.Geometry.parse("M10,0 L10,10 L25,10 L25,0 L10,0 M3,15 L9,12 L9,17 L3,15 M6,16 L3,20", true);
+  var female_propositus = go.Geometry.parse("M13,6 m-5,0 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0 M3,15 L8,12 L8,17 L3,15 M6,16 L4,20", true);
+  var male_carrier = go.Geometry.parse("M0,0 L5,0 L5,10 L0,10 L0,0 M5,0 L10,0 M10,10 L10,0 M5,10 L10,10", true);
+  var female_carrier = go.Geometry.parse("F M10,0 m-5,0 a0,0 1 0,0 0,10 M5,0 L5,10 X M10,10 m-5,0 a0,0 1 0,0 0,-10", false);
   myPalette.model = new go.GraphLinksModel([{
       text: "",
       stroke: brush,
       fill: fill_blank,
       color: color,
       figure: "Hexagon",
-      tips:'正常女性'
+      tips: '正常女性'
     },
     {
       text: "",
@@ -150,15 +160,31 @@ export default function init() {
       fill: fill_blank,
       color: color,
       figure: "Rectangle",
-      tips:'正常男性'
+      tips: '正常男性'
     },
     {
       text: "",
       stroke: brush,
       fill: fill_full,
       color: color,
-      geometry:female_propositus,
-      tips:'女性先证者'
+      figure: "Hexagon",
+      tips: '女性患者'
+    },
+    {
+      text: "",
+      stroke: brush,
+      fill: fill_full,
+      color: color,
+      figure: "Rectangle",
+      tips: '男性患者'
+    },
+    {
+      text: "",
+      stroke: brush,
+      fill: fill_full,
+      color: color,
+      geometry: female_propositus,
+      tips: '女性先证者'
     },
     {
       text: "",
@@ -166,8 +192,25 @@ export default function init() {
       fill: fill_full,
       color: color,
       figure: 'Gate',
-      geometry:male_propositus,
-      tips:'男性先证者'
+      geometry: male_propositus,
+      tips: '男性先证者'
+    },
+    {
+      text: "",
+      stroke: brush,
+      fill: fill_full,
+      color: color,
+      geometry: female_carrier,
+      tips: '女性常染色体隐形基因携带者'
+    },
+    {
+      text: "",
+      stroke: brush,
+      fill: fill_full,
+      color: color,
+      figure: 'Gate',
+      geometry: male_carrier,
+      tips: '男性常染色体隐形基因携带者'
     }
   ]);
 
@@ -226,7 +269,7 @@ export default function init() {
         "fromPort": {
           show: false,
         },
-        
+
       }
     });
   });

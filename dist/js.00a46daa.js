@@ -47650,14 +47650,22 @@ function init() {
     avoidable: false,
     layerName: "Foreground"
   }, GO("Shape", "Ellipse", {
-    width: 1,
-    height: 1,
+    width: 4,
+    height: 4,
     stroke: 'transparent',
     fill: 'transparent',
     portId: "",
     fromLinkable: true,
     toLinkable: true,
-    cursor: "pointer"
+    cursor: "pointer",
+    mouseLeave: function mouseLeave(e, node) {
+      node.fill = 'transparent';
+      node.stroke = 'transparent';
+    },
+    mouseEnter: function mouseEnter(e, node) {
+      node.fill = 'rgb(0,128,128)';
+      node.stroke = 'rgb(0,128,128)';
+    }
   })));
   myDiagram.addDiagramListener("ChangedSelection", function (diagramEvent) {
     var idrag = document.getElementById("infoDraggable");
@@ -47685,9 +47693,13 @@ function init() {
     linkLabelKeysProperty: "labelKeys"
   });
 
-  var male_propositus = _go.default.Geometry.parse("M10,0 L10,10 L25,10 L25,0 L10,0 M3,15 L9,12 L9,17 L3,15  M6,16 L3,20", true);
+  var male_propositus = _go.default.Geometry.parse("M10,0 L10,10 L25,10 L25,0 L10,0 M3,15 L9,12 L9,17 L3,15 M6,16 L3,20", true);
 
-  var female_propositus = _go.default.Geometry.parse("M10,0 L10,10 L25,10 L25,0 L10,0 M3,15 L9,12 L9,17 L3,15  M6,16 L3,20", true);
+  var female_propositus = _go.default.Geometry.parse("M13,6 m-5,0 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0 M3,15 L8,12 L8,17 L3,15 M6,16 L4,20", true);
+
+  var male_carrier = _go.default.Geometry.parse("M0,0 L5,0 L5,10 L0,10 L0,0 M5,0 L10,0 M10,10 L10,0 M5,10 L10,10", true);
+
+  var female_carrier = _go.default.Geometry.parse("F M10,0 m-5,0 a0,0 1 0,0 0,10 M5,0 L5,10 X M10,10 m-5,0 a0,0 1 0,0 0,-10", false);
 
   myPalette.model = new _go.default.GraphLinksModel([{
     text: "",
@@ -47708,6 +47720,20 @@ function init() {
     stroke: brush,
     fill: fill_full,
     color: color,
+    figure: "Hexagon",
+    tips: '女性患者'
+  }, {
+    text: "",
+    stroke: brush,
+    fill: fill_full,
+    color: color,
+    figure: "Rectangle",
+    tips: '男性患者'
+  }, {
+    text: "",
+    stroke: brush,
+    fill: fill_full,
+    color: color,
     geometry: female_propositus,
     tips: '女性先证者'
   }, {
@@ -47718,6 +47744,21 @@ function init() {
     figure: 'Gate',
     geometry: male_propositus,
     tips: '男性先证者'
+  }, {
+    text: "",
+    stroke: brush,
+    fill: fill_full,
+    color: color,
+    geometry: female_carrier,
+    tips: '女性常染色体隐形基因携带者'
+  }, {
+    text: "",
+    stroke: brush,
+    fill: fill_full,
+    color: color,
+    figure: 'Gate',
+    geometry: male_carrier,
+    tips: '男性常染色体隐形基因携带者'
   }]);
   $(function () {
     $("#paletteDraggable").draggable({
@@ -47824,7 +47865,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "2591" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49662" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
