@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "parcel watch src/index.html"
+    "dev": "parcel watch src/index.html",
+    "build": "del dist /Q && parcel build src/index.html"
   },
   "author": "huzhiqiao",
   "license": "ISC",
@@ -19,6 +20,7 @@
     "@babel/preset-env": "^7.5.5",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.7.0",
-    "babel-preset-stage-2": "^6.24.1"
+    "babel-preset-stage-2": "^6.24.1",
+    "sass": "^1.22.9"
   }
 }

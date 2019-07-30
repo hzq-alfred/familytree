@@ -47584,14 +47584,13 @@ var _DataInspetor = _interopRequireDefault(require("./../res/DataInspetor"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var myDiagram, myPalette;
-
 function init() {
+  var myDiagram, myPalette;
   var GO = _go.default.GraphObject.make;
   var brush = "#999";
   var fill_blank = "white";
   var fill_full = '#999';
-  var color = '#111';
+  var color = '#999';
   myDiagram = GO(_go.default.Diagram, "myDiagramDiv", {
     "undoManager.isEnabled": true
   });
@@ -47612,35 +47611,54 @@ function init() {
       fromLinkableDuplicates: true,
       toLinkableDuplicates: true,
       cursor: "pointer",
-      margin: new _go.default.Margin(-1, 0),
-      mouseLeave: function mouseLeave(e, node) {
-        node.fill = 'transparent';
-      },
-      mouseEnter: function mouseEnter(e, node) {
-        node.fill = 'rgb(0,128,128)';
-      }
+      margin: new _go.default.Margin(-1, 0)
     });
   }
 
+  function makeText(row, col, textType) {
+    return GO(_go.default.TextBlock, {
+      margin: 5,
+      maxSize: new _go.default.Size(200, NaN),
+      wrap: _go.default.TextBlock.WrapFit,
+      textAlign: "center",
+      editable: true,
+      font: "bold 10pt Helvetica, Arial, sans-serif",
+      name: "TEXT",
+      row: row,
+      column: col
+    }, new _go.default.Binding("stroke", "color"), new _go.default.Binding("text", textType).makeTwoWay());
+  }
+
   myDiagram.nodeTemplateMap.add("", GO(_go.default.Node, "Table", {
-    locationSpot: _go.default.Spot.Center,
-    resizable: true
-  }, new _go.default.Binding("location", "loc", _go.default.Point.parse).makeTwoWay(_go.default.Point.stringify), GO(_go.default.Shape, "Ellipse", {
+    resizable: true,
+    resizeObjectName: "SHAPE",
+    rotatable: true,
+    rotateObjectName: "SHAPE",
+    selectionChanged: function selectionChanged(e) {
+      if (e.isSelected) {
+        for (var it in e.ports.ja.Db) {
+          e.ports.ja.Db[it].value.fill = 'rgb(0,128,128)';
+        }
+      } else {
+        for (var it in e.ports.ja.Db) {
+          e.ports.ja.Db[it].value.fill = 'transparent';
+        }
+      }
+    }
+  }, new _go.default.Binding("location", "loc", _go.default.Point.parse).makeTwoWay(_go.default.Point.stringify), GO(_go.default.Panel, 'Table', GO(_go.default.Panel, 'Spot', {
+    row: 1,
+    column: 1
+  }, GO(_go.default.Shape, "Ellipse", {
     strokeWidth: 2,
     width: 60,
     height: 60,
     fill: 'transparent',
     name: "SHAPE"
-  }, new _go.default.Binding("figure", "figure"), new _go.default.Binding("geometry", "geometry"), new _go.default.Binding("fill", "fill"), new _go.default.Binding("stroke", "stroke")), GO(_go.default.TextBlock, {
-    margin: 5,
-    maxSize: new _go.default.Size(200, NaN),
-    wrap: _go.default.TextBlock.WrapFit,
-    textAlign: "center",
-    editable: true,
-    font: "bold 9pt Helvetica, Arial, sans-serif",
-    name: "TEXT",
-    stroke: 'blue'
-  }, new _go.default.Binding("stroke", "color"), new _go.default.Binding("text", "text").makeTwoWay()), makePort("r", _go.default.Spot.Right), makePort("tr", new _go.default.Spot(1, 0.3)), makePort("t", _go.default.Spot.Top), makePort("l", _go.default.Spot.Left), makePort("tl", new _go.default.Spot(0, 0.3)), makePort("b", _go.default.Spot.Bottom), {
+  }, new _go.default.Binding("figure", "figure"), new _go.default.Binding("geometry", "geometry"), new _go.default.Binding("fill", "fill"), new _go.default.Binding("stroke", "stroke")), makePort("r", _go.default.Spot.Right), makePort("tr", new _go.default.Spot(1, 0.3)), makePort("t", _go.default.Spot.Top), makePort("l", _go.default.Spot.Left), makePort("tl", new _go.default.Spot(0, 0.3)), makePort("b", _go.default.Spot.Bottom)), makeText(0, 1, 'textTop'), //top
+  makeText(2, 1, 'textBottom'), //bottom
+  makeText(1, 0, 'textLeft'), //left
+  makeText(1, 2, 'textRight') //right
+  ), {
     toolTip: GO("ToolTip", GO(_go.default.TextBlock, {
       margin: 4
     }, new _go.default.Binding("text", "tips")))
@@ -47701,43 +47719,77 @@ function init() {
 
   var female_carrier = _go.default.Geometry.parse("F M10,0 m-5,0 a0,0 1 0,0 0,10 M5,0 L5,10 X M10,10 m-5,0 a0,0 1 0,0 0,-10", false);
 
+  var male_death_this = _go.default.Geometry.parse("M3,3 L8,3 L8,8 L3,8 L3,3 M11,0 L0,11", true);
+
+  var female_death_this = _go.default.Geometry.parse("M15,6 m-5,0 a0,0 1 0,0 0,10 a0,0 1 0,0 0,-10 M20,0 L0,20", true);
+
+  var male_death_other = _go.default.Geometry.parse("M3,3 L8,3 L8,8 L3,8 L3,3 M11,0 L0,11", true);
+
+  var female_death_other = _go.default.Geometry.parse("M15,6 m-5,0 a0,0 1 0,0 0,10 a0,0 1 0,0 0,-10 M20,0 L0,20", true);
+
+  var sex_link = _go.default.Geometry.parse("M10,0 m-5,0 a0,0 1 0,0 0,10 a0,0 1 0,0 0,-10 F M6,5 m-1,0 a0,0 1 0,0 0,0.4 a0,0 1 0,0 0,-0.4", true);
+
+  var sex_unknown = _go.default.Geometry.parse("M10,0 L0,5 L10,10 L20,5 L10,0", true);
+
+  var abortion = _go.default.Geometry.parse("M10,10 m-5,0 a0,0 1 0,0 0,6 a0,0 1 0,0 0,-6 M5,0 L5,10", true);
+
+  var nullipara = _go.default.Geometry.parse("M0,1 L10,1 L10,2 L0,2 L0,1 M2,3 L8,3 L8,4 L2,4 L2,3 M0,10", true);
+
   myPalette.model = new _go.default.GraphLinksModel([{
-    text: "",
+    textTop: "",
+    textBottom: "",
+    textLeft: "",
+    textRight: "",
     stroke: brush,
     fill: fill_blank,
     color: color,
     figure: "Hexagon",
     tips: '正常女性'
   }, {
-    text: "",
+    textTop: "",
+    textBottom: "",
+    textLeft: "",
+    textRight: "",
     stroke: brush,
     fill: fill_blank,
     color: color,
     figure: "Rectangle",
     tips: '正常男性'
   }, {
-    text: "",
+    textTop: "",
+    textBottom: "",
+    textLeft: "",
+    textRight: "",
     stroke: brush,
     fill: fill_full,
     color: color,
     figure: "Hexagon",
     tips: '女性患者'
   }, {
-    text: "",
+    textTop: "",
+    textBottom: "",
+    textLeft: "",
+    textRight: "",
     stroke: brush,
     fill: fill_full,
     color: color,
     figure: "Rectangle",
     tips: '男性患者'
   }, {
-    text: "",
+    textTop: "",
+    textBottom: "",
+    textLeft: "",
+    textRight: "",
     stroke: brush,
     fill: fill_full,
     color: color,
     geometry: female_propositus,
     tips: '女性先证者'
   }, {
-    text: "",
+    textTop: "",
+    textBottom: "",
+    textLeft: "",
+    textRight: "",
     stroke: brush,
     fill: fill_full,
     color: color,
@@ -47745,32 +47797,122 @@ function init() {
     geometry: male_propositus,
     tips: '男性先证者'
   }, {
-    text: "",
+    textTop: "",
+    textBottom: "",
+    textLeft: "",
+    textRight: "",
     stroke: brush,
     fill: fill_full,
     color: color,
     geometry: female_carrier,
     tips: '女性常染色体隐形基因携带者'
   }, {
-    text: "",
+    textTop: "",
+    textBottom: "",
+    textLeft: "",
+    textRight: "",
     stroke: brush,
     fill: fill_full,
     color: color,
     figure: 'Gate',
     geometry: male_carrier,
     tips: '男性常染色体隐形基因携带者'
+  }, {
+    textTop: "",
+    textBottom: "",
+    textLeft: "",
+    textRight: "",
+    stroke: brush,
+    fill: fill_full,
+    color: color,
+    geometry: female_death_this,
+    tips: '女性死于本病'
+  }, {
+    textTop: "",
+    textBottom: "",
+    textLeft: "",
+    textRight: "",
+    stroke: brush,
+    fill: fill_full,
+    color: color,
+    figure: 'Gate',
+    geometry: male_death_this,
+    tips: '男性死于本病'
+  }, {
+    textTop: "",
+    textBottom: "",
+    textLeft: "",
+    textRight: "",
+    stroke: brush,
+    fill: fill_blank,
+    color: color,
+    geometry: female_death_other,
+    tips: '女性死于其他病'
+  }, {
+    textTop: "",
+    textBottom: "",
+    textLeft: "",
+    textRight: "",
+    stroke: brush,
+    fill: fill_blank,
+    color: color,
+    figure: 'Gate',
+    geometry: male_death_other,
+    tips: '男性死于其他病'
+  }, {
+    textTop: "",
+    textBottom: "",
+    textLeft: "",
+    textRight: "",
+    stroke: brush,
+    fill: fill_blank,
+    color: color,
+    geometry: sex_link,
+    tips: '性联锁隐形基因携带者'
+  }, {
+    textTop: "",
+    textBottom: "",
+    textLeft: "",
+    textRight: "",
+    stroke: brush,
+    fill: fill_blank,
+    color: color,
+    figure: 'Gate',
+    geometry: sex_unknown,
+    tips: '性别不明正常人'
+  }, {
+    textTop: "",
+    textBottom: "",
+    textLeft: "",
+    textRight: "",
+    stroke: brush,
+    fill: fill_full,
+    color: color,
+    geometry: abortion,
+    tips: '流产'
+  }, {
+    textTop: "",
+    textBottom: "",
+    textLeft: "",
+    textRight: "",
+    stroke: brush,
+    fill: fill_full,
+    color: color,
+    figure: 'Gate',
+    geometry: nullipara,
+    tips: '婚后未生育'
   }]);
   $(function () {
-    $("#paletteDraggable").draggable({
-      handle: "#paletteDraggableHandle"
-    }).resizable({
-      stop: function stop() {
-        myPalette.layoutDiagram(true);
-      }
-    });
-    $("#infoDraggable").draggable({
-      handle: "#infoDraggableHandle"
-    });
+    // $("#paletteDraggable").draggable({
+    //   handle: "#paletteDraggableHandle"
+    // }).resizable({
+    //   stop: function () {
+    //     myPalette.layoutDiagram(true);
+    //   }
+    // });
+    // $("#infoDraggable").draggable({
+    //   handle: "#infoDraggableHandle"
+    // });
     new _DataInspetor.default('myInfo', myDiagram, {
       properties: {
         "key": {
@@ -47821,6 +47963,24 @@ function init() {
   };
   myDiagram.model.linkFromPortIdProperty = 'fromPort';
   myDiagram.model.linkToPortIdProperty = 'toPort';
+  $('#pic').on('change', function () {
+    var file = this.files[0];
+    var reader = new FileReader();
+    reader.readAsDataURL(file);
+
+    reader.onload = function () {
+      myDiagram.add(GO(_go.default.Part, 'Auto', {
+        resizable: true,
+        resizeObjectName: "PIC",
+        rotatable: true,
+        rotateObjectName: "PIC"
+      }, GO(_go.default.Picture, this.result, {
+        width: 200,
+        height: 200,
+        name: 'PIC'
+      })));
+    };
+  });
 }
 },{"./../res/go.js":"res/go.js","./../res/DataInspetor":"res/DataInspetor.js"}],"js/index.js":[function(require,module,exports) {
 "use strict";
@@ -47865,7 +48025,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49662" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "10820" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

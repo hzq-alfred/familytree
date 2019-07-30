@@ -1,0 +1,52 @@
+.root {
+    width: 100%;
+    display: flex;
+
+    #paletteDraggable {
+        height: 580px;
+        width: 300px;
+
+        #paletteDraggableHandle {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold
+        }
+
+        #paletteContainer {
+            height: 580px;
+            width: 300px;
+
+            #myPaletteDiv {
+                height: 580px;
+                width: 300px
+            }
+        }
+    }
+
+    .diagram {
+        display: inline-block;
+        vertical-align: top;
+        border: solid 2px #ddd;
+        width: 1000px;
+        height: 600px;
+        overflow: auto;
+
+        #myDiagramDiv {
+            background-color: white;
+            width: 100%;
+            height: 100%;
+        }
+    }
+
+    #infoDraggable {
+        display: inline-block;
+        padding: 5px;
+        width: 250px;
+
+        #infoDraggableHandle {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold
+        }
+    }
+}

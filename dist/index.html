@@ -8,31 +8,34 @@
     <title>家系图</title>
     <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
     <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
-    <script src="/go.223839f7.js"></script>
+    <script src="/go-debug.a8b48026.js"></script>
     <script src="/Figures.187d316a.js"></script>
-</head>
+<script src="/css.81192ade.js"></script></head>
 
 <body>
-    <div style="width: 100%; display: flex; ">
-        <div id="paletteDraggable" class="draggable" style="height: 300px;width: 200px;">
-            <div id="paletteDraggableHandle" style="text-align: center;font-size: 18px;font-weight: bold">家系图</div>
-            <div id="paletteContainer" style="height: 300px;width: 200px;">
-                <div id="myPaletteDiv" style="height: 300px;width: 200px;"></div>
+    <div class="root">
+        <div id="paletteDraggable">
+            <div id="paletteDraggableHandle">家系图</div>
+            <div id="paletteContainer">
+                <div id="myPaletteDiv"></div>
             </div>
         </div>
 
-        <div style="display: inline-block; vertical-align: top; border: solid 2px #ddd; width:1000px; height: 600px;overflow: auto">
-            <div id="myDiagramDiv" style="background-color: white;width: 200%;height: 200%;"></div>
+        <div class="diagram">
+            <div id="myDiagramDiv"></div>
         </div>
 
-        <div id="infoDraggable" class="draggable" style="display: inline-block;padding: 5px;width: 250px">
-            <div id="infoDraggableHandle" style="text-align: center;font-size: 18px;font-weight: bold">属性面板</div>
+        <div id="infoDraggable">
+            <div id="infoDraggableHandle">属性面板</div>
             <div>
                 <div id="myInfo"></div>
             </div>
         </div>
     </div>
+    <input type="file" style="vertical-align: top" id="pic">
+    <img src="/attachments.fac555e9.jpg" alt="" srcset="">
 </body>
 <script src="/js.00a46daa.js"></script>
+<style lang="scss">@import 'css.81192ade.css';</style>
 
 </html>
