@@ -6,13 +6,15 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "parcel watch src/index.html",
-    "build": "del dist /Q && parcel build src/index.html"
+    "build": "del dist /Q && parcel build src/index.html --public-url ./",
+    "del":"del dist /Q"
   },
   "author": "huzhiqiao",
   "license": "ISC",
   "dependencies": {
     "babel-polyfill": "^6.26.0",
-    "parcel-bundler": "^1.12.3"
+    "parcel-bundler": "^1.12.3",
+    "postcss-pxtorem": "^4.0.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.5.5",

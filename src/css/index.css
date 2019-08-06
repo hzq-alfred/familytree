@@ -1,47 +1,313 @@
+html {
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  font-family: "Microsoft Yahei ", "Microsoft Yahei UI", "Trebuchet MS",
+    "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+body {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
 header {
   width: 100%;
+  display: flex;
+  justify-content: center;
+  height: 40px;
+  line-height: 40px;
+  background-color: #393f4f;
+  color: #fff;
 }
-.root {
-  width: 100%;
+header .feather {
+  width: 16px;
+  align-self: center;
+  margin-left: 10px;
+  cursor: pointer;
+}
+aside .feather {
+  width: 35px;
+  height: 35px;
+  color: #888;
+  cursor: pointer;
+}
+aside .feather:hover {
+  color: #393f4f;
+}
+aside .logic {
+  display: flex;
+  flex-direction: row;
+  background-color: #e1e1e1;
+  font-weight: bold;
+  color: #555;
+}
+aside .logic div {
+  padding: 8px 25px;
+  cursor: pointer;
+}
+aside .logic div.active {
+  background-color: #fff;
+}
+aside .menu {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+aside .menu > div {
+  height: 0;
+  overflow: hidden;
+  border-bottom: 1px solid #ddd;
+}
+aside .menu .handle {
   display: flex;
 }
-.root #paletteDraggable {
-  height: 580px;
-  width: 300px;
+aside .menu .handle div {
+  display: flex;
+  flex-direction: column;
+  width: 50px;
+  justify-content: center;
+  text-align: center;
+  font-size: 14px;
+  padding: 10px;
+  color: #777;
+  cursor: pointer;
+  font-weight: bold;
 }
-.root #paletteDraggable #paletteDraggableHandle {
+aside .menu .handle div:hover {
+  color: #393f4f;
+}
+aside .menu .handle div svg {
+  width: 100%;
+  margin-bottom: 10px;
+}
+aside .menu #paletteDraggable {
+  height: 120px;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+aside .menu #paletteDraggable #paletteDraggableHandle {
   text-align: center;
   font-size: 18px;
   font-weight: bold;
 }
-.root #paletteDraggable #paletteContainer {
-  height: 580px;
-  width: 300px;
+aside .menu #paletteDraggable #paletteContainer {
+  height: 120px;
 }
-.root #paletteDraggable #paletteContainer #myPaletteDiv {
-  height: 580px;
-  width: 300px;
+aside .menu #paletteDraggable #paletteContainer #myPaletteDiv {
+  height: 120px;
+}
+.root {
+  width: 100%;
+  display: flex;
+  flex: 1;
 }
 .root .diagram {
   display: inline-block;
   vertical-align: top;
-  border: solid 2px #ddd;
-  width: 1000px;
-  height: 600px;
   overflow: auto;
+  width: 100%;
+  flex: 1;
 }
 .root .diagram #myDiagramDiv {
   background-color: white;
   width: 100%;
   height: 100%;
 }
+.root .diagram #myDiagramDiv canvas {
+  background-color: #fff;
+}
 .root #infoDraggable {
+  line-height: 40px;
   display: inline-block;
-  padding: 5px;
-  width: 250px;
+  width: 280px;
+  position: absolute;
+  right: 0;
+  z-index: 100;
+  color: #ddd;
+  background-color: #393f4f;
 }
 .root #infoDraggable #infoDraggableHandle {
   text-align: center;
   font-size: 18px;
+  cursor: move;
+  background-color: #56607a;
+}
+.root #overview {
+  width: 250px;
+  height: 200px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 200;
+}
+.root #contextMenu {
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  z-index: 300;
+  display: none;
+}
+.root #contextMenu .background {
+  width: 200px;
+  height: 200px;
+  background-color: rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  position: relative;
+  left: 25px;
+  top: 25px;
+}
+.root #contextMenu .background div {
+  position: absolute;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  border-radius: 50%;
+  background-color: #fff;
+  width: 70px;
+  height: 70px;
+  line-height: 70px;
+  text-align: center;
   font-weight: bold;
+  box-shadow: 0px 0px 8px 2px black;
+  cursor: default;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.root #contextMenu .background div:nth-child(1) {
+  left: 65px;
+  top: 65px;
+  background-color: #393f4f;
+  color: white;
+  box-shadow: none;
+}
+.root #contextMenu .background div:nth-child(1):hover {
+  background-color: #56607a;
+}
+.root #contextMenu .background div:nth-child(2) {
+  left: 65px;
+  top: -40px;
+}
+.root #contextMenu .background div:nth-child(3) {
+  left: -50px;
+  top: 65px;
+}
+.root #contextMenu .background div:nth-child(4) {
+  left: 180px;
+  top: 65px;
+}
+.root #contextMenu .background div:nth-child(5) {
+  left: 65px;
+  top: 180px;
+}
+.root #contextMenu .background div:hover {
+  background-color: #da6666;
+  color: white;
+}
+.root #contextMenu .select {
+  position: relative;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  box-shadow: 0 0 10px 0px #393f4f;
+  background-color: #fff;
+  cursor: default;
+  display: none;
+}
+.root #contextMenu .select:nth-child(1) {
+  left: 72px;
+  top: -290px;
+  margin-bottom: 10px;
+}
+.root #contextMenu .select:nth-child(2) {
+  left: 134px;
+  top: -280px;
+  margin-bottom: 10px;
+}
+.root #contextMenu .select:nth-child(3) {
+  left: 196px;
+  top: -270px;
+  margin-bottom: 10px;
+}
+.root #contextMenu .select:nth-child(4) {
+  left: 258px;
+  top: -260px;
+  margin-bottom: 10px;
+}
+.root #contextMenu .select:nth-child(5) {
+  left: 320px;
+  top: -250px;
+  margin-bottom: 10px;
+}
+.root #contextMenu .select:nth-child(6) {
+  left: 318px;
+  top: -230px;
+  margin-bottom: 10px;
+}
+.root #contextMenu .select:nth-child(7) {
+  left: 256px;
+  top: -220px;
+  margin-bottom: 10px;
+}
+.root #contextMenu .select:nth-child(8) {
+  left: 194px;
+  top: -210px;
+  margin-bottom: 10px;
+}
+.root #contextMenu .select:nth-child(9) {
+  left: 132px;
+  top: -200px;
+  margin-bottom: 10px;
+}
+.root #contextMenu .select:nth-child(10) {
+  left: -130px;
+  top: -245px;
+  margin-bottom: 10px;
+}
+.root #contextMenu .select:nth-child(11) {
+  left: -192px;
+  top: -345px;
+  margin-bottom: 10px;
+}
+.root #contextMenu .select:nth-child(12) {
+  left: -254px;
+  top: -445px;
+  margin-bottom: 10px;
+}
+.root #contextMenu .select:nth-child(13) {
+  left: -316px;
+  top: -545px;
+  margin-bottom: 10px;
+}
+.root #contextMenu .select:nth-child(14) {
+  left: -312px;
+  top: -655px;
+  margin-bottom: 10px;
+}
+.root #contextMenu .select:nth-child(15) {
+  left: -250px;
+  top: -755px;
+  margin-bottom: 10px;
+}
+.root #contextMenu .select:nth-child(16) {
+  left: -188px;
+  top: -855px;
+  margin-bottom: 10px;
+}
+.root #contextMenu .select:nth-child(17) {
+  left: -126px;
+  top: -955px;
+  margin-bottom: 10px;
+}
+.root #contextMenu .select:hover {
+  background-color: #da6666;
+  color: white;
 }

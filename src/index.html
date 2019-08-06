@@ -5,39 +5,95 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="icon" type="image/png" href="./img/logo.png">
+    <link rel="stylesheet" href="./css/index.scss">
     <title>家系图</title>
     <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
     <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
     <script src="./res/go-debug.js"></script>
     <script src="./res/Figures.js"></script>
 </head>
 
 <body>
-    <div class='root'>
-        <div id="paletteDraggable">
-            <div id="paletteDraggableHandle">家系图</div>
-            <div id="paletteContainer">
-                <div id="myPaletteDiv"></div>
+    <header>家系图 <i data-feather="alert-circle"></if>
+    </header>
+    <aside>
+        <div class="logic">
+            <div data-index='1'>编辑</div>
+            <div class="active" data-index='2'>视图</div>
+        </div>
+        <div class="menu">
+            <div class="handle">
+                <div id='save'>
+                    <i data-feather='save'></i>
+                    <span>保存</span>
+                </div>
+                <div id='download'>
+                    <i data-feather='download'></i>
+                    <span>下载</span>
+                </div>
+                <div id='image'>
+                    <i data-feather='image'></i>
+                    <span>图片</span>
+                </div>
+                <div id='text'>
+                    <i data-feather='type'></i>
+                    <span>文字</span>
+                </div>
+            </div>
+            <div id="paletteDraggable">
+                <div id="paletteContainer">
+                    <div id="myPaletteDiv"></div>
+                </div>
             </div>
         </div>
+    </aside>
+    <div class='root'>
+
 
         <div class='diagram'>
             <div id="myDiagramDiv"></div>
         </div>
 
         <div id="infoDraggable">
-            <div id="infoDraggableHandle">属性面板</div>
+            <div id="infoDraggableHandle">属性面板 </div>
             <div>
                 <div id="myInfo"></div>
             </div>
         </div>
+
+        <div id="overview"></div>
+        <div id="contextMenu">
+            <div class="background">
+                <div>编辑</div>
+                <div id="parent">父母</div>
+                <div id='siblings'>兄妹</div>
+                <div id='spouse'>配偶</div>
+                <div id='children'>子女</div>
+            </div>
+            <div class="select">正常女性</div>
+            <div class="select">正常男性</div>
+            <div class="select">女性患者</div>
+            <div class="select">男性患者</div>
+            <div class="select">女性先证者</div>
+            <div class="select">男性先证者</div>
+            <div class="select">女性常染色体隐形基因携带者</div>
+            <div class="select">男性常染色体隐形基因携带者</div>
+            <div class="select">女性死于本病</div>
+            <div class="select">男性死于本病</div>
+            <div class="select">女性死于其他病</div>
+            <div class="select">男性死于其他病</div>
+            <div class="select">性联锁隐形基因携带者</div>
+            <div class="select">性别不明正常人</div>
+            <div class="select">流产</div>
+            <div class="select">婚后未生育</div>
+        </div>
     </div>
-    <input type="file" style="vertical-align: top" id="pic"></input>
-    <img src="./img/attachments.jpg" alt="" srcset="">
+    <input type="file" style="display: none" id="pic"></input>
+    <!-- <img src="./img/家系图 (2).png" alt="" srcset=""> -->
 </body>
 <script src="js/index.js"></script>
-<style lang="scss">
-    @import './css/index.scss';
-</style>
 
 </html>

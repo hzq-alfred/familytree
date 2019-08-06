@@ -1,55 +1,315 @@
-header{
-    width: 100%;
+html {
+    height: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    font-family: 'Microsoft Yahei ', 'Microsoft Yahei UI', 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
-.root {
+
+body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+header {
     width: 100%;
     display: flex;
+    justify-content: center;
+    height: 40px;
+    line-height: 40px;
+    background-color: #393f4f;
+    color: #fff;
 
-    #paletteDraggable {
-        height: 580px;
-        width: 300px;
+    .feather {
+        width: 16px;
+        align-self: center;
+        margin-left: 10px;
+        cursor: pointer;
+    }
+}
 
-        #paletteDraggableHandle {
-            text-align: center;
-            font-size: 18px;
-            font-weight: bold
+aside {
+    .feather {
+        width: 35px;
+        height: 35px;
+        color: #888;
+        cursor: pointer;
+
+        &:hover {
+            color: #393f4f
         }
+    }
 
-        #paletteContainer {
-            height: 580px;
-            width: 300px;
+    .logic {
+        display: flex;
+        flex-direction: row;
+        background-color: #e1e1e1;
+        font-weight: bold;
+        color: #555;
 
-            #myPaletteDiv {
-                height: 580px;
-                width: 300px
+        div {
+            padding: 8px 25px;
+            cursor: pointer;
+
+            &.active {
+                background-color: #fff;
             }
         }
     }
 
+    .menu {
+        overflow-x: auto;
+        overflow-y: hidden;
+
+        >div {
+            height: 0;
+            overflow: hidden;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .handle {
+            display: flex;
+
+            div {
+                display: flex;
+                flex-direction: column;
+                width: 50px;
+                // box-sizing: border-box;
+                justify-content: center;
+                text-align: center;
+                font-size: 14px;
+                padding: 10px;
+                color: #777;
+                cursor: pointer;
+                font-weight: bold;
+
+                &:hover {
+                    color: #393f4f
+                }
+
+                svg {
+                    width: 100%;
+                    margin-bottom: 10px;
+                }
+            }
+        }
+
+        #paletteDraggable {
+            height: 120px;
+            overflow-x: auto;
+            overflow-y: hidden;
+
+            #paletteDraggableHandle {
+                text-align: center;
+                font-size: 18px;
+                font-weight: bold
+            }
+
+            #paletteContainer {
+                height: 120px;
+
+                #myPaletteDiv {
+                    height: 120px;
+                }
+            }
+        }
+    }
+}
+
+.root {
+    width: 100%;
+    display: flex;
+    flex: 1;
+
     .diagram {
         display: inline-block;
         vertical-align: top;
-        border: solid 2px #ddd;
-        width: 1000px;
-        height: 600px;
         overflow: auto;
+        width: 100%;
+        flex: 1;
 
         #myDiagramDiv {
             background-color: white;
             width: 100%;
             height: 100%;
+
+            canvas {
+                background-color: #fff;
+            }
         }
     }
 
     #infoDraggable {
+        line-height: 40px;
         display: inline-block;
-        padding: 5px;
-        width: 250px;
+        width: 280px;
+        position: absolute;
+        right: 0;
+        z-index: 100;
+        color: #ddd;
+        background-color: #393f4f;
 
         #infoDraggableHandle {
             text-align: center;
             font-size: 18px;
-            font-weight: bold
+            cursor: move;
+            background-color: #56607a;
+        }
+    }
+
+    #overview {
+        width: 250px;
+        height: 200px;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        z-index: 200;
+    }
+
+    #contextMenu {
+        width: 250px;
+        height: 250px;
+        border-radius: 50%;
+        background-color: rgba(0, 0, 0, 0.5);
+        position: fixed;
+        z-index: 300;
+        display: none;
+
+        .background {
+            width: 200px;
+            height: 200px;
+            background-color: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            position: relative;
+            left: 25px;
+            top: 25px;
+
+            div {
+                position: absolute;
+                z-index: 1000;
+                left: 0;
+                top: 0;
+                border-radius: 50%;
+                background-color: #fff;
+                width: 70px;
+                height: 70px;
+                line-height: 70px;
+                text-align: center;
+                font-weight: bold;
+                box-shadow: 0px 0px 8px 2px black;
+                cursor: default;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+
+                &:nth-child(1) {
+                    left: 65px;
+                    top: 65px;
+                    background-color: #393f4f;
+                    color: white;
+                    box-shadow: none;
+
+                    &:hover {
+                        background-color: #56607a;
+                    }
+                }
+
+                &:nth-child(2) {
+                    left: 65px;
+                    top: -40px;
+                }
+
+                &:nth-child(3) {
+                    left: -50px;
+                    top: 65px;
+                }
+
+                &:nth-child(4) {
+                    left: 180px;
+                    top: 65px;
+                }
+
+                &:nth-child(5) {
+                    left: 65px;
+                    top: 180px;
+                }
+
+                &:hover {
+                    background-color: rgb(218, 102, 102);
+                    color: white;
+                }
+            }
+        }
+
+        .select {
+            position: relative;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            box-shadow: 0 0 10px 0px #393f4f;
+            background-color: #fff;
+            cursor: default;
+            display: none;
+
+
+            @for $var from 1 through 5 {
+                &:nth-child(#{$var}) {
+                    left: 10px +62*$var;
+                    top: -300px+10*$var;
+                    margin-bottom: 10px
+                }
+            }
+            @for $var from 6 through 9 {
+                &:nth-child(#{$var}) {
+                    left: 690px - 62*$var;
+                    top: -290px +10*$var;
+                    margin-bottom: 10px
+                }
+            }
+
+            @for $var from 10 through 13 {
+                &:nth-child(#{$var}) {
+                    left: 490px - 62*$var;
+                    top: 755px - 100*$var;
+                    margin-bottom: 10px
+                }
+            }
+            @for $var from 14 through 17 {
+                &:nth-child(#{$var}) {
+                    left: -1180px + 62*$var;
+                    top: 745px - 100*$var;
+                    margin-bottom: 10px
+                }
+            }
+
+            // &:nth-child(2) {
+            //     left: 100px;
+            //     top: -80px;
+            // }
+            // &:nth-child(3) {
+            //     left: 120px;
+            //     top: -60px;
+            // }
+            // &:nth-child(4) {
+            //     left: 140px;
+            //     top: -40px;
+            // }
+            // &:nth-child(5) {
+            //     left: 100px;
+            //     top: -80px;
+            // }
+
+            &:hover {
+                background-color: rgb(218, 102, 102);
+                color: white;
+            }
         }
     }
 }
