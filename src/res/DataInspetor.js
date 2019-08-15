@@ -32,31 +32,39 @@ export default function Inspector(divid, diagram, options) {
   }
 
   var self = this;
-  diagram.addModelChangedListener(function(e) {
+  diagram.addModelChangedListener(function (e) {
     if (e.isTransactionFinished) self.inspectObject();
   });
   if (this.inspectsSelection) {
-    diagram.addDiagramListener("ChangedSelection", function(e) { self.inspectObject(); });
+    diagram.addDiagramListener("ChangedSelection", function (e) {
+      self.inspectObject();
+    });
   }
 }
 
 // Some static predicates to use with the "show" property.
-Inspector.showIfNode = function(part) { return part instanceof go.Node };
-Inspector.showIfLink = function(part) { return part instanceof go.Link };
-Inspector.showIfGroup = function(part) { return part instanceof go.Group };
+Inspector.showIfNode = function (part) {
+  return part instanceof go.Node
+};
+Inspector.showIfLink = function (part) {
+  return part instanceof go.Link
+};
+Inspector.showIfGroup = function (part) {
+  return part instanceof go.Group
+};
 
 // Only show the property if its present. Useful for "key" which will be shown on Nodes and Groups, but normally not on Links
-Inspector.showIfPresent = function(data, propname) {
+Inspector.showIfPresent = function (data, propname) {
   if (data instanceof go.Part) data = data.data;
   return typeof data === "object" && data[propname] !== undefined;
 };
 
 /**
-* Update the HTML state of this Inspector given the properties of the {@link #inspectedObject}.
-* @param {Object} object is an optional argument, used when {@link #inspectSelection} is false to
-*                        set {@link #inspectedObject} and show and edit that object's properties.
-*/
-Inspector.prototype.inspectObject = function(object) {
+ * Update the HTML state of this Inspector given the properties of the {@link #inspectedObject}.
+ * @param {Object} object is an optional argument, used when {@link #inspectSelection} is false to
+ *                        set {@link #inspectedObject} and show and edit that object's properties.
+ */
+Inspector.prototype.inspectObject = function (object) {
   var inspectedObject = null;
   var inspectedObjects = null;
   if (object === null) return;
@@ -203,9 +211,9 @@ Inspector.prototype.inspectObject = function(object) {
           if (properties.has(addIt.key)) {
             var newVal = all.get(addIt.key) + '|' + properties.get(addIt.key);
             all.set(addIt.key, newVal);
-            if ((declaredProperties[addIt.key] && declaredProperties[addIt.key].type !== 'color'
-              && declaredProperties[addIt.key].type !== 'checkbox' && declaredProperties[addIt.key].type !== 'select')
-              || !declaredProperties[addIt.key]) { // for non-string properties i.e color
+            if ((declaredProperties[addIt.key] && declaredProperties[addIt.key].type !== 'color' &&
+                declaredProperties[addIt.key].type !== 'checkbox' && declaredProperties[addIt.key].type !== 'select') ||
+              !declaredProperties[addIt.key]) { // for non-string properties i.e color
               newVal = shared.get(addIt.key) + '|' + properties.get(addIt.key);
               shared.set(addIt.key, newVal);
             }
@@ -222,9 +230,9 @@ Inspector.prototype.inspectObject = function(object) {
         var addIt = properties.iterator;
         while (addIt.next()) {
           if (all.has(addIt.key)) {
-            if ((declaredProperties[addIt.key] && declaredProperties[addIt.key].type !== 'color'
-              && declaredProperties[addIt.key].type !== 'checkbox' && declaredProperties[addIt.key].type !== 'select')
-              || !declaredProperties[addIt.key]) { // for non-string properties i.e color
+            if ((declaredProperties[addIt.key] && declaredProperties[addIt.key].type !== 'color' &&
+                declaredProperties[addIt.key].type !== 'checkbox' && declaredProperties[addIt.key].type !== 'select') ||
+              !declaredProperties[addIt.key]) { // for non-string properties i.e color
               var newVal = all.get(addIt.key) + '|' + properties.get(addIt.key);
               all.set(addIt.key, newVal);
             }
@@ -239,9 +247,9 @@ Inspector.prototype.inspectObject = function(object) {
         addIt = all.iterator;
         while (addIt.next()) {
           if (!properties.has(addIt.key)) {
-            if ((declaredProperties[addIt.key] && declaredProperties[addIt.key].type !== 'color'
-              && declaredProperties[addIt.key].type !== 'checkbox' && declaredProperties[addIt.key].type !== 'select')
-              || !declaredProperties[addIt.key]) { // for non-string properties i.e color
+            if ((declaredProperties[addIt.key] && declaredProperties[addIt.key].type !== 'color' &&
+                declaredProperties[addIt.key].type !== 'checkbox' && declaredProperties[addIt.key].type !== 'select') ||
+              !declaredProperties[addIt.key]) { // for non-string properties i.e color
               var newVal = all.get(addIt.key) + '|';
               all.set(addIt.key, newVal);
             }
@@ -267,16 +275,16 @@ Inspector.prototype.inspectObject = function(object) {
 };
 
 /**
-* @ignore
-* This predicate should be false if the given property should not be shown.
-* Normally it only checks the value of "show" on the property descriptor.
-* The default value is true.
-* @param {string} propertyName the property name
-* @param {Object} propertyDesc the property descriptor
-* @param {Object} inspectedObject the data object
-* @return {boolean} whether a particular property should be shown in this Inspector
-*/
-Inspector.prototype.canShowProperty = function(propertyName, propertyDesc, inspectedObject) {
+ * @ignore
+ * This predicate should be false if the given property should not be shown.
+ * Normally it only checks the value of "show" on the property descriptor.
+ * The default value is true.
+ * @param {string} propertyName the property name
+ * @param {Object} propertyDesc the property descriptor
+ * @param {Object} inspectedObject the data object
+ * @return {boolean} whether a particular property should be shown in this Inspector
+ */
+Inspector.prototype.canShowProperty = function (propertyName, propertyDesc, inspectedObject) {
   if (propertyDesc.show === false) return false;
   // if "show" is a predicate, make sure it passes or do not show this property
   if (typeof propertyDesc.show === "function") return propertyDesc.show(inspectedObject, propertyName);
@@ -284,16 +292,16 @@ Inspector.prototype.canShowProperty = function(propertyName, propertyDesc, inspe
 }
 
 /**
-* @ignore
-* This predicate should be false if the given property should not be editable by the user.
-* Normally it only checks the value of "readOnly" on the property descriptor.
-* The default value is true.
-* @param {string} propertyName the property name
-* @param {Object} propertyDesc the property descriptor
-* @param {Object} inspectedObject the data object
-* @return {boolean} whether a particular property should be shown in this Inspector
-*/
-Inspector.prototype.canEditProperty = function(propertyName, propertyDesc, inspectedObject) {
+ * @ignore
+ * This predicate should be false if the given property should not be editable by the user.
+ * Normally it only checks the value of "readOnly" on the property descriptor.
+ * The default value is true.
+ * @param {string} propertyName the property name
+ * @param {Object} propertyDesc the property descriptor
+ * @param {Object} inspectedObject the data object
+ * @return {boolean} whether a particular property should be shown in this Inspector
+ */
+Inspector.prototype.canEditProperty = function (propertyName, propertyDesc, inspectedObject) {
   if (this._diagram.isReadOnly || this._diagram.isModelReadOnly) return false;
   // assume property values that are functions of Objects cannot be edited
   var data = (inspectedObject instanceof go.Part) ? inspectedObject.data : inspectedObject;
@@ -314,7 +322,7 @@ Inspector.prototype.canEditProperty = function(propertyName, propertyDesc, inspe
  * @param {any} data
  * @return {any}
  */
-Inspector.prototype.findValue = function(propName, propDesc, data) {
+Inspector.prototype.findValue = function (propName, propDesc, data) {
   var val = '';
   if (propDesc && propDesc.defaultValue !== undefined) val = propDesc.defaultValue;
   if (data[propName] !== undefined) val = data[propName];
@@ -323,29 +331,43 @@ Inspector.prototype.findValue = function(propName, propDesc, data) {
 }
 
 /**
-* @ignore
-* This sets this._inspectedProperties[propertyName] and creates the HTML table row:
-*    <tr>
-*      <td>propertyName</td>
-*      <td><input value=propertyValue /></td>
-*    </tr>
-* @param {string} propertyName the property name
-* @param {*} propertyValue the property value
-* @return the table row
-*/
-Inspector.prototype.buildPropertyRow = function(propertyName, propertyValue) {
+ * @ignore
+ * This sets this._inspectedProperties[propertyName] and creates the HTML table row:
+ *    <tr>
+ *      <td>propertyName</td>
+ *      <td><input value=propertyValue /></td>
+ *    </tr>
+ * @param {string} propertyName the property name
+ * @param {*} propertyValue the property value
+ * @return the table row
+ */
+Inspector.prototype.buildPropertyRow = function (propertyName, propertyValue) {
   var mainDiv = this._div;
   var tr = document.createElement("tr");
 
   var td1 = document.createElement("td");
-  td1.textContent = propertyName;
+  var textContent;
+  switch (propertyName) {
+    case 'fill':
+      textContent = '填充';
+      break;
+    case 'stroke':
+      textContent = '边框';
+      break;
+    default:
+      textContent = propertyName;
+  }
+  td1.textContent = textContent;
   tr.appendChild(td1);
 
   var td2 = document.createElement("td");
   var decProp = this.declaredProperties[propertyName];
   var input = null;
   var self = this;
-  function updateall() { self.updateAllProperties(); }
+
+  function updateall() {
+    self.updateAllProperties();
+  }
 
   if (decProp && decProp.type === "select") {
     input = document.createElement("select");
@@ -368,7 +390,8 @@ Inspector.prototype.buildPropertyRow = function(propertyName, propertyValue) {
           // input.addEventListener("input", updateall);
           input.addEventListener("change", updateall);
         }
-      } if (decProp.type === "checkbox") {
+      }
+      if (decProp.type === "checkbox") {
         input.checked = !!propertyValue;
         input.addEventListener("change", updateall);
       }
@@ -388,25 +411,25 @@ Inspector.prototype.buildPropertyRow = function(propertyName, propertyValue) {
 };
 
 /**
-* @ignore
-* HTML5 color input will only take hex,
-* so var HTML5 canvas convert the color into hex format.
-* This converts "rgb(255, 0, 0)" into "#FF0000", etc.
-* @param {string} propertyValue
-* @return {string}
-*/
-Inspector.prototype.convertToColor = function(propertyValue) {
+ * @ignore
+ * HTML5 color input will only take hex,
+ * so var HTML5 canvas convert the color into hex format.
+ * This converts "rgb(255, 0, 0)" into "#FF0000", etc.
+ * @param {string} propertyValue
+ * @return {string}
+ */
+Inspector.prototype.convertToColor = function (propertyValue) {
   var ctx = document.createElement("canvas").getContext("2d");
   ctx.fillStyle = propertyValue;
   return ctx.fillStyle;
 };
 
 /**
-* @ignore
-* @param {string}
-* @return {Array.<number>}
-*/
-Inspector.prototype.convertToArrayOfNumber = function(propertyValue) {
+ * @ignore
+ * @param {string}
+ * @return {Array.<number>}
+ */
+Inspector.prototype.convertToArrayOfNumber = function (propertyValue) {
   if (propertyValue === "null") return null;
   var split = propertyValue.split(' ');
   var arr = [];
@@ -419,11 +442,11 @@ Inspector.prototype.convertToArrayOfNumber = function(propertyValue) {
 };
 
 /**
-* @ignore
-* @param {*}
-* @return {string}
-*/
-Inspector.prototype.convertToString = function(x) {
+ * @ignore
+ * @param {*}
+ * @return {string}
+ */
+Inspector.prototype.convertToString = function (x) {
   if (x === undefined) return "undefined";
   if (x === null) return "null";
   if (x instanceof go.Point) return go.Point.stringify(x);
@@ -445,15 +468,15 @@ Inspector.prototype.convertToString = function(x) {
 };
 
 /**
-* @ignore
-* Update all of the HTML in this Inspector.
-*/
-Inspector.prototype.updateAllHTML = function() {
+ * @ignore
+ * Update all of the HTML in this Inspector.
+ */
+Inspector.prototype.updateAllHTML = function () {
   var inspectedProps = this._inspectedProperties;
   var diagram = this._diagram;
   var isPart = this.inspectedObject instanceof go.Part;
   var data = isPart ? this.inspectedObject.data : this.inspectedObject;
-  if (!data) {  // clear out all of the fields
+  if (!data) { // clear out all of the fields
     for (var name in inspectedProps) {
       var input = inspectedProps[name];
       if (input instanceof HTMLSelectElement) {
@@ -486,15 +509,15 @@ Inspector.prototype.updateAllHTML = function() {
 }
 
 /**
-* @ignore
-* Update an HTMLSelectElement with an appropriate list of choices, given the propertyName
-*/
-Inspector.prototype.updateSelect = function(decProp, select, propertyName, propertyValue) {
-  select.innerHTML = "";  // clear out anything that was there
+ * @ignore
+ * Update an HTMLSelectElement with an appropriate list of choices, given the propertyName
+ */
+Inspector.prototype.updateSelect = function (decProp, select, propertyName, propertyValue) {
+  select.innerHTML = ""; // clear out anything that was there
   var choices = decProp.choices;
   if (typeof choices === "function") choices = choices(this.inspectedObject, propertyName);
   if (!Array.isArray(choices)) choices = [];
-  decProp.choicesArray = choices;  // remember list of actual choice values (not strings)
+  decProp.choicesArray = choices; // remember list of actual choice values (not strings)
   for (var i = 0; i < choices.length; i++) {
     var choice = choices[i];
     var opt = document.createElement("option");
@@ -505,17 +528,17 @@ Inspector.prototype.updateSelect = function(decProp, select, propertyName, prope
 }
 
 /**
-* @ignore
-* Update all of the data properties of {@link #inspectedObject} according to the
-* current values held in the HTML input elements.
-*/
-Inspector.prototype.updateAllProperties = function() {
+ * @ignore
+ * Update all of the data properties of {@link #inspectedObject} according to the
+ * current values held in the HTML input elements.
+ */
+Inspector.prototype.updateAllProperties = function () {
   var inspectedProps = this._inspectedProperties;
   var diagram = this._diagram;
   if (diagram.selection.count === 1 || !this.multipleSelection) { // single object update
     var isPart = this.inspectedObject instanceof go.Part;
     var data = isPart ? this.inspectedObject.data : this.inspectedObject;
-    if (!data) return;  // must not try to update data when there's no data!
+    if (!data) return; // must not try to update data when there's no data!
 
     diagram.startTransaction('set all properties');
     for (var name in inspectedProps) {
@@ -545,16 +568,36 @@ Inspector.prototype.updateAllProperties = function() {
 
       // convert to specific type, if needed
       switch (type) {
-        case 'boolean': value = !(value === false || value === 'false' || value === '0'); break;
-        case 'number': value = parseFloat(value); break;
-        case 'arrayofnumber': value = this.convertToArrayOfNumber(value); break;
-        case 'point': value = go.Point.parse(value); break;
-        case 'size': value = go.Size.parse(value); break;
-        case 'rect': value = go.Rect.parse(value); break;
-        case 'spot': value = go.Spot.parse(value); break;
-        case 'margin': value = go.Margin.parse(value); break;
-        case 'checkbox': value = input.checked; break;
-        case 'select': value = decProp.choicesArray[input.selectedIndex]; break;
+        case 'boolean':
+          value = !(value === false || value === 'false' || value === '0');
+          break;
+        case 'number':
+          value = parseFloat(value);
+          break;
+        case 'arrayofnumber':
+          value = this.convertToArrayOfNumber(value);
+          break;
+        case 'point':
+          value = go.Point.parse(value);
+          break;
+        case 'size':
+          value = go.Size.parse(value);
+          break;
+        case 'rect':
+          value = go.Rect.parse(value);
+          break;
+        case 'spot':
+          value = go.Spot.parse(value);
+          break;
+        case 'margin':
+          value = go.Margin.parse(value);
+          break;
+        case 'checkbox':
+          value = input.checked;
+          break;
+        case 'select':
+          value = decProp.choicesArray[input.selectedIndex];
+          break;
       }
 
       // in case parsed to be different, such as in the case of boolean values,
@@ -587,14 +630,17 @@ Inspector.prototype.updateAllProperties = function() {
       var change = false;
       if (this.declaredProperties[name] && this.declaredProperties[name].type === 'checkbox') change = true; // always change checkbox
       if (arr1.length < arr2.length // i.e Alpha|Beta -> Alpha procs the change
-        && (!this.declaredProperties[name] // from and to links
-          || !(this.declaredProperties[name] // do not change color checkbox and choices due to them always having less
-            && (this.declaredProperties[name].type === 'color' || this.declaredProperties[name].type === 'checkbox' || this.declaredProperties[name].type === 'choices')))) {
+        &&
+        (!this.declaredProperties[name] // from and to links
+          ||
+          !(this.declaredProperties[name] // do not change color checkbox and choices due to them always having less
+            &&
+            (this.declaredProperties[name].type === 'color' || this.declaredProperties[name].type === 'checkbox' || this.declaredProperties[name].type === 'choices')))) {
         change = true;
       } else { // standard detection in change in properties
         for (var j = 0; j < arr1.length && j < arr2.length; j++) {
-          if (!(arr1[j] === arr2[j])
-            && !(this.declaredProperties[name] && this.declaredProperties[name].type === 'color' && arr1[j].toLowerCase() === arr2[j].toLowerCase())) {
+          if (!(arr1[j] === arr2[j]) &&
+            !(this.declaredProperties[name] && this.declaredProperties[name].type === 'color' && arr1[j].toLowerCase() === arr2[j].toLowerCase())) {
             change = true;
           }
         }
@@ -632,16 +678,36 @@ Inspector.prototype.updateAllProperties = function() {
 
             // convert to specific type, if needed
             switch (type) {
-              case 'boolean': value = !(value === false || value === 'false' || value === '0'); break;
-              case 'number': value = parseFloat(value); break;
-              case 'arrayofnumber': value = this.convertToArrayOfNumber(value); break;
-              case 'point': value = go.Point.parse(value); break;
-              case 'size': value = go.Size.parse(value); break;
-              case 'rect': value = go.Rect.parse(value); break;
-              case 'spot': value = go.Spot.parse(value); break;
-              case 'margin': value = go.Margin.parse(value); break;
-              case 'checkbox': value = input.checked; break;
-              case 'select': value = decProp.choicesArray[input.selectedIndex]; break;
+              case 'boolean':
+                value = !(value === false || value === 'false' || value === '0');
+                break;
+              case 'number':
+                value = parseFloat(value);
+                break;
+              case 'arrayofnumber':
+                value = this.convertToArrayOfNumber(value);
+                break;
+              case 'point':
+                value = go.Point.parse(value);
+                break;
+              case 'size':
+                value = go.Size.parse(value);
+                break;
+              case 'rect':
+                value = go.Rect.parse(value);
+                break;
+              case 'spot':
+                value = go.Spot.parse(value);
+                break;
+              case 'margin':
+                value = go.Margin.parse(value);
+                break;
+              case 'checkbox':
+                value = input.checked;
+                break;
+              case 'select':
+                value = decProp.choicesArray[input.selectedIndex];
+                break;
             }
 
             // in case parsed to be different, such as in the case of boolean values,
