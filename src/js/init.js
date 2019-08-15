@@ -368,7 +368,6 @@ export default function init() {
     })
 
     $('#download').on('click', function () {
-      return
       downloadFile($('#myDiagramDiv canvas')[0].toDataURL("image/png"), '家系图')
     })
 
@@ -420,17 +419,17 @@ export default function init() {
             // 被删除的节点 key
             let key = e.oldValue.key;
             let index;
-            let parentobj, parentflag;
-            let childrenobj, childrenflag;
+            let parentobj = [],parentflag;
             // 循环node节点数组
             // 删除节点时 需要把有相关关系一同删除
             myDiagram.model.nodeDataArray.map(item => {
+              let childrenobj, childrenflag;
               if (item.parent) {
                 // 循环节点 parent关系
                 item.parent.map((it, id) => {
                   // 若 节点parent中 有 删除节点的key
                   if (it === key) {
-                    parentobj = item;
+                    parentobj.push(item);
                     index = id;
                     parentflag = true;
                   }
@@ -457,14 +456,16 @@ export default function init() {
                 }
               }
             })
-            if (parentobj) {
-              myDiagram.model.linkDataArray.push({
-                to: parentobj.parent[0],
-                toPort: 'b',
-                from: parentobj.key,
-                fromPort: 't',
-                labelKeys: [--keynum]
-              })
+            if (parentobj.length > 0) {
+              for (let obj of parentobj) {
+                myDiagram.model.linkDataArray.push({
+                  to: obj.parent[0],
+                  toPort: 'b',
+                  from: obj.key,
+                  fromPort: 't',
+                  labelKeys: [--keynum]
+                })
+              }
             }
             // 若模板只剩下线的连接点,清空节点数组
             let onlyLinkable = myDiagram.model.nodeDataArray.every((item) => {
@@ -486,7 +487,7 @@ export default function init() {
       let node = {}; //生成节点
       for (let i in choosen) {
         if (choosen.hasOwnProperty(i)) {
-          if (i !== ('parent' || 'spouse' || 'children' || 'sblings')) node[i] = choosen[i]
+          if (i !== ('parent' || 'spouse' || 'children')) node[i] = choosen[i]
         }
       }
 
@@ -494,12 +495,10 @@ export default function init() {
       let select = model.nodeDataArray.filter((item) => {
         return item.key == selectPos.key
       })[0]; //选中节点
-      let link = model.linkDataArray.filter((item) => {
-        return item.from == selectPos.key || item.to == selectPos.key
-      }) //节点对应 连接线段
+
       if (selectPos.choice == 'parent') {
         if (!select.parent || select.parent.length == 0) {
-          node.loc = `${selectPos.x-75} ${selectPos.y-120}`;
+          node.loc = `${selectPos.x} ${selectPos.y-120}`;
           node.key = --keynum;
           model.nodeDataArray.push(node);
           model.nodeDataArray.push({
@@ -529,15 +528,8 @@ export default function init() {
           model.nodeDataArray.map(item => {
             if (item.key == firstParentKey) {
               item.spouse = [node.key]
-              if (item.loc.split(' ')[0] - select.loc.split(' ')[0] < 0) {
-                node.loc = `${selectPos.x+75} ${selectPos.y-120}`;
-                toPort = 'l';
-                fromPort = 'r';
-              } else {
-                node.loc = `${selectPos.x-75} ${selectPos.y-120}`;
-                toPort = 'r';
-                fromPort = 'l';
-              }
+              item.loc = `${selectPos.x-75} ${selectPos.y-120}`;
+              node.loc = `${selectPos.x+75} ${selectPos.y-120}`;
             }
           })
           model.nodeDataArray.push(node);
@@ -593,7 +585,12 @@ export default function init() {
         if (select.spouse) {
           alert('业务判断错误:夫妻不超1个')
         } else {
-          node.loc = `${selectPos.x+150} ${selectPos.y}`;
+          if (select.children) {
+            node.loc = `${selectPos.x+75} ${selectPos.y}`;
+            select.loc = `${selectPos.x-75} ${selectPos.y}`;
+          } else {
+            node.loc = `${selectPos.x+150} ${selectPos.y}`;
+          }
           node.key = --keynum;
           model.nodeDataArray.push(node);
           model.nodeDataArray.push({
@@ -651,7 +648,11 @@ export default function init() {
           })
         }
         if (!select.children || select.children.length == 0) {
-          node.loc = `${selectPos.x -75 } ${selectPos.y+120}`;
+          if (select.spouse) {
+            node.loc = `${selectPos.x + 75 } ${selectPos.y+120}`;
+          } else {
+            node.loc = `${selectPos.x} ${selectPos.y+120}`;
+          }
           node.key = --keynum;
           model.nodeDataArray.push(node);
           model.nodeDataArray.push({
@@ -685,12 +686,28 @@ export default function init() {
 
         } else {
           let length = select.children.length;
-          let firstChild = model.nodeDataArray.find(item => {
-            return item.key == select.children[0]
-          })
-          let [x, y] = firstChild.loc.split(' ')
+          let parentObj;
+          if(select.parent&&select.parent.length>0){
+            parentObj = model.nodeDataArray.find(item=>{
+              if(item.key==select.parent[0]) return true
+            })
+          }
+          let childrenArr = []
+          for (let value of select.children) {
+            model.nodeDataArray.find(item => {
+              if (item.key == value) {
+                childrenArr.push(item)
+              }
+            })
+          }
+          console.log('parentObj',parentObj)
+          let [x, y] = childrenArr[childrenArr.length - 1].loc.split(' ')
 
-          node.loc = `${ +x +(200*length)} ${+y}`;
+          if(!select.spouse&&!(select.parent)){
+            select.loc =  `${ +childrenArr[0].loc.split(' ')[0] +(x - childrenArr[0].loc.split(' ')[0]+200)/2} ${selectPos.y}`
+          }
+
+          node.loc = `${ +x + 200 } ${y}`;
           node.key = --keynum;
           model.nodeDataArray.push(node);
           model.nodeDataArray.push({
@@ -771,10 +788,14 @@ export default function init() {
           show: Inspector.showIfPresent,
           type: 'color'
         },
-        "color": {
-          show: Inspector.showIfPresent,
-          type: 'color',
-          show: false,
+        'spouse': {
+          show: false
+        },
+        'children': {
+          show: false
+        },
+        'parent': {
+          show: false
         },
         "figure": {
           show: false,
@@ -805,10 +826,7 @@ export default function init() {
         },
       }
     });
-
   });
-
-
 
   function showContextMenu(obj, diagram, tool) {
     selectPos.x = obj.position.x;
