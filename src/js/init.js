@@ -331,13 +331,15 @@ export default function init() {
   myPalette.nodeTemplateMap = myDiagram.nodeTemplateMap;
   myPalette.model = new go.GraphLinksModel(nodeModel);
 
+  myDiagram.model = GO(go.GraphLinksModel, {
+    linkLabelKeysProperty: "labelKeys"
+  });
+
   $(function () {
     if (parent.$('#treeData').data('data')) {
+      console.log(parent.$('#treeData').data('data'))
       myDiagram.model = go.Model.fromJson(parent.$('#treeData').data('data'))
     }
-    myDiagram.model = GO(go.GraphLinksModel, {
-      linkLabelKeysProperty: "labelKeys"
-    });
     myDiagram.model.linkFromPortIdProperty = 'fromPort';
     myDiagram.model.linkToPortIdProperty = 'toPort';
     myDiagram.toolManager.linkingTool.archetypeLabelNodeData = {
@@ -419,7 +421,8 @@ export default function init() {
             // 被删除的节点 key
             let key = e.oldValue.key;
             let index;
-            let parentobj = [],parentflag;
+            let parentobj = [],
+              parentflag;
             // 循环node节点数组
             // 删除节点时 需要把有相关关系一同删除
             myDiagram.model.nodeDataArray.map(item => {
@@ -435,6 +438,7 @@ export default function init() {
                   }
                 })
                 if (parentflag) item.parent.splice(index, 1);
+                parentflag = false
               }
               if (item.spouse) {
                 if (item.spouse[0] === key) item.spouse = null
@@ -540,7 +544,7 @@ export default function init() {
           model.linkDataArray.push({
             to: node.key,
             toPort: toPort,
-            from: firstParentKey,
+            from: select.parent[0],
             fromPort: fromPort,
             labelKeys: [keynum]
           })
@@ -687,9 +691,9 @@ export default function init() {
         } else {
           let length = select.children.length;
           let parentObj;
-          if(select.parent&&select.parent.length>0){
-            parentObj = model.nodeDataArray.find(item=>{
-              if(item.key==select.parent[0]) return true
+          if (select.parent && select.parent.length > 0) {
+            parentObj = model.nodeDataArray.find(item => {
+              if (item.key == select.parent[0]) return true
             })
           }
           let childrenArr = []
@@ -700,11 +704,11 @@ export default function init() {
               }
             })
           }
-          console.log('parentObj',parentObj)
+          console.log('parentObj', parentObj)
           let [x, y] = childrenArr[childrenArr.length - 1].loc.split(' ')
 
-          if(!select.spouse&&!(select.parent)){
-            select.loc =  `${ +childrenArr[0].loc.split(' ')[0] +(x - childrenArr[0].loc.split(' ')[0]+200)/2} ${selectPos.y}`
+          if (!select.spouse && !(select.parent)) {
+            select.loc = `${ +childrenArr[0].loc.split(' ')[0] +(x - childrenArr[0].loc.split(' ')[0]+200)/2} ${selectPos.y}`
           }
 
           node.loc = `${ +x + 200 } ${y}`;
@@ -797,6 +801,15 @@ export default function init() {
         'parent': {
           show: false
         },
+        // 'spouse': {
+        //   show: true
+        // },
+        // 'children': {
+        //   show: true
+        // },
+        // 'parent': {
+        //   show: true
+        // },
         "figure": {
           show: false,
         },
@@ -939,6 +952,7 @@ export default function init() {
           submitflag = false;
           var index = parent.layer.getFrameIndex(window.name);
           parent.$('#treeData').data('data', myDiagram.model.toJson())
+          console.log(myDiagram.model.toJson())
           parent.$('#treeData').data('guid', JSON.parse(data.data)[0].GUID)
           parent.$('#treeData').data('img', JSON.parse(data.data)[0].FilePath)
           parent.$('#treeImg')[0].src = JSON.parse(data.data)[0].FilePath
